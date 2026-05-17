@@ -7,9 +7,10 @@ import { CategoriasModule } from './categorias/categorias.module';
 import { ProdutosModule } from './produtos/produtos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { RelatoriosModule } from './relatorios/relatorios.module';
+import { MlModule } from './ml/ml.module';
 
 @Module({
-  imports: [PrismaModule, ClientesModule, CategoriasModule, ProdutosModule, PedidosModule, RelatoriosModule],
+  imports: [PrismaModule, ClientesModule, CategoriasModule, ProdutosModule, PedidosModule, RelatoriosModule, MlModule],
   controllers: [AppController],
   providers: [AppService],
 })
