@@ -25,46 +25,88 @@ export default function CategoriasPage() {
       return;
     }
     setErro("");
-
     fetch("http://localhost:3001/categorias", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome }),
     })
       .then((res) => res.json())
-      .then((novaCategoria) => {
-        setCategorias([...categorias, novaCategoria]);
+      .then((nova) => {
+        setCategorias([...categorias, nova]);
         setNome("");
       });
   }
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Categorias</h1>
+    <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto", fontFamily: "sans-serif" }}>
+      <h1 style={{ fontSize: "1.8rem", marginBottom: "0.25rem", color: "#111" }}>Categorias</h1>
+      <p style={{ color: "#888", marginBottom: "2rem" }}>Cadastre e gerencie as categorias dos produtos.</p>
 
-      <div style={{ marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: "400px" }}>
-        <h2>Cadastrar Categoria</h2>
-        <input placeholder="Nome da categoria" value={nome} onChange={(e) => setNome(e.target.value)} />
-        {erro && <p style={{ color: "red" }}>{erro}</p>}
-        <button onClick={handleSubmit}>Salvar</button>
+      <div style={{
+        backgroundColor: "#151516",
+        borderRadius: "12px",
+        padding: "1.5rem",
+        marginBottom: "2rem",
+        maxWidth: "480px",
+      }}>
+        <h2 style={{ color: "white", fontSize: "1.1rem", marginBottom: "1rem" }}>Cadastrar Categoria</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <input
+            placeholder="Nome da categoria"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            style={{
+              padding: "0.6rem 0.8rem",
+              borderRadius: "8px",
+              border: "1px solid #333",
+              backgroundColor: "#2a2a2a",
+              color: "white",
+              fontSize: "0.95rem",
+              outline: "none",
+            }}
+          />
+          {erro && <p style={{ color: "#ff6b6b", fontSize: "0.85rem", margin: 0 }}>{erro}</p>}
+          <button
+            onClick={handleSubmit}
+            style={{
+              padding: "0.7rem",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: "white",
+              color: "#151516",
+              fontWeight: "bold",
+              cursor: "pointer",
+              fontSize: "0.95rem",
+            }}
+          >
+            Salvar
+          </button>
+        </div>
       </div>
 
-      <h2>Lista de Categorias</h2>
+      <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>Lista de Categorias</h2>
       {categorias.length === 0 ? (
-        <p>Nenhuma categoria cadastrada ainda.</p>
+        <p style={{ color: "#888" }}>Nenhuma categoria cadastrada ainda.</p>
       ) : (
-        <table border={1} cellPadding={8}>
-          <thead>
-            <tr><th>ID</th><th>Nome</th></tr>
-          </thead>
-          <tbody>
-            {categorias.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td><td>{c.nome}</td>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
+            <thead>
+              <tr style={{ backgroundColor: "#151516", color: "white" }}>
+                {["ID", "Nome"].map((h) => (
+                  <th key={h} style={{ padding: "0.75rem 1rem", textAlign: "left" }}>{h}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categorias.map((c, i) => (
+                <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? "#f9f9f9" : "white" }}>
+                  <td style={{ padding: "0.75rem 1rem" }}>{c.id}</td>
+                  <td style={{ padding: "0.75rem 1rem" }}>{c.nome}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
