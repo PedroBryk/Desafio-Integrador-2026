@@ -72,9 +72,9 @@ export default function CategoriasPage() {
             </thead>
             <tbody>
               {categorias.map((c, i) => (
-                <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? "#f9f9f9" : "white" }}>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.id}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.nome}</td>
+                <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? "#1e1e1e" : "#2a2a2a" }}>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.id}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.nome}</td>
                 </tr>
               ))}
             </tbody>

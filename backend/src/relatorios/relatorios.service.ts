@@ -170,26 +170,29 @@ export class RelatoriosService {
   }
 
   // Vendas por categoria
+ 
   async vendasPorCategoria() {
-    const pedidos = await this.prisma.pedido.groupBy({
-      by: ['categoriaId'],
-      _sum: { total: true },
-      _count: { id: true },
-    });
+  const itens = await this.prisma.itemPedido.findMany({
+    include: {
+      produto: {
+        include: { categoria: true },
+      },
+      pedido: true,
+    },
+  });
 
-    const comNome = await Promise.all(
-      pedidos.map(async (p) => {
-        const categoria = p.categoriaId
-          ? await this.prisma.categoria.findUnique({ where: { id: p.categoriaId } })
-          : null;
-        return {
-          categoria: categoria?.nome ?? 'Sem categoria',
-          totalPedidos: p._count.id,
-          totalReceita: p._sum.total ?? 0,
-        };
-      }),
-    );
+  //vendas por categoria
+  const porCategoria: Record<string, { totalPedidos: number; totalReceita: number }> = {};
 
-    return comNome;
+  for (const item of itens) {
+    const nomeCategoria = item.produto.categoria?.nome ?? 'Sem categoria';
+    if (!porCategoria[nomeCategoria]) {
+      porCategoria[nomeCategoria] = { totalPedidos: 0, totalReceita: 0 };
+    }
+    porCategoria[nomeCategoria].totalPedidos += 1;
+    porCategoria[nomeCategoria].totalReceita += Number(item.precoUnit) * item.quantidade;
   }
+
+  return Object.entries(porCategoria).map(([categoria, dados]) => ({ categoria, ...dados }));
+}
 }
