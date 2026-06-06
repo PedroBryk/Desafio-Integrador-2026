@@ -116,13 +116,13 @@ export default function ClientesPage() {
             </thead>
             <tbody>
               {clientes.map((c, i) => (
-                <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? "#f9f9f9" : "white" }}>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.id}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.nome}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.email}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.cidade}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.estado}</td>
-                  <td style={{ padding: "0.75rem 1rem" }}>{c.pais}</td>
+                <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? "#1e1e1e" : "#2a2a2a" }}>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.id}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.nome}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.email}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.cidade}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.estado}</td>
+                  <td style={{ padding: "0.75rem 1rem", color: "#ffffff" }}>{c.pais}</td>
                 </tr>
               ))}
             </tbody>

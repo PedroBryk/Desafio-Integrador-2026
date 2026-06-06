@@ -31,6 +31,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             { href: "/categorias", label: "Categorias" },
             { href: "/produtos", label: "Produtos" },
             { href: "/pedidos", label: "Pedidos" },
+            { href: "/dashboard", label: "Dashboard" },
+            { href: "/decisao", label: "Decisão Estratégica" },
           ].map((item, index, arr) => (
             <span key={item.href} style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
               <Link href={item.href} style={{ color: "#aaaaaa", textDecoration: "none", fontSize: "0.95rem" }}>
