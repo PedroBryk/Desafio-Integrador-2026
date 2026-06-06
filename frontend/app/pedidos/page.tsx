@@ -14,6 +14,8 @@ export default function PedidosPage() {
   const [produtoId, setProdutoId] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:3001/pedidos").then((res) => res.json()).then((data) => setPedidos(data)).catch(() => setPedidos([]));
@@ -25,13 +27,20 @@ export default function PedidosPage() {
     if (!clienteId || !produtoId) { setErro("Selecione um cliente e um produto."); return; }
     if (Number(quantidade) <= 0) { setErro("A quantidade deve ser maior que zero."); return; }
     setErro("");
+    setSalvando(true);
     fetch("http://localhost:3001/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clienteId: Number(clienteId), produtoId: Number(produtoId), quantidade: Number(quantidade) }),
     })
       .then((res) => res.json())
-      .then((novo) => { setPedidos([...pedidos, novo]); setClienteId(""); setProdutoId(""); setQuantidade(""); });
+      .then((novo) => {
+        setPedidos([...pedidos, novo]);
+        setClienteId(""); setProdutoId(""); setQuantidade("");
+        setSucesso("Pedido criado com sucesso!");
+        setTimeout(() => setSucesso(""), 3000);
+      })
+      .finally(() => setSalvando(false));
   }
 
   const inputStyle = {
@@ -41,8 +50,8 @@ export default function PedidosPage() {
 
   return (
     <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: "1.8rem", marginBottom: "0.25rem", color: "#111" }}>Pedidos</h1>
-      <p style={{ color: "#888", marginBottom: "2rem" }}>Crie e gerencie os pedidos do sistema.</p>
+      <h1 style={{ fontSize: "1.8rem", marginBottom: "0.25rem", color: "#ffffff" }}>Pedidos</h1>
+      <p style={{ color: "#aaaaaa", marginBottom: "2rem" }}>Crie e gerencie os pedidos do sistema.</p>
 
       <div style={{ backgroundColor: "#151516", borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem", maxWidth: "480px" }}>
         <h2 style={{ color: "white", fontSize: "1.1rem", marginBottom: "1rem" }}>Criar Pedido</h2>
@@ -57,13 +66,14 @@ export default function PedidosPage() {
           </select>
           <input placeholder="Quantidade" type="number" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} style={inputStyle} />
           {erro && <p style={{ color: "#ff6b6b", fontSize: "0.85rem", margin: 0 }}>{erro}</p>}
-          <button onClick={handleSubmit} style={{ padding: "0.7rem", borderRadius: "8px", border: "none", backgroundColor: "white", color: "#151516", fontWeight: "bold", cursor: "pointer", fontSize: "0.95rem" }}>
-            Salvar
+          {sucesso && <p style={{ color: "#4caf50", fontSize: "0.85rem", margin: 0 }}>{sucesso}</p>}
+          <button onClick={handleSubmit} disabled={salvando} style={{ padding: "0.7rem", borderRadius: "8px", border: "none", backgroundColor: salvando ? "#555" : "white", color: salvando ? "#aaa" : "#151516", fontWeight: "bold", cursor: salvando ? "not-allowed" : "pointer", fontSize: "0.95rem" }}>
+            {salvando ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </div>
 
-      <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>Lista de Pedidos</h2>
+      <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "#ffffff" }}>Lista de Pedidos</h2>
       {pedidos.length === 0 ? (
         <p style={{ color: "#888" }}>Nenhum pedido criado ainda.</p>
       ) : (

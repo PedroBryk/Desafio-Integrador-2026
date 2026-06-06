@@ -13,16 +13,12 @@ export default function ProdutosPage() {
   const [estoque, setEstoque] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3001/produtos")
-      .then((res) => res.json())
-      .then((data) => setProdutos(data))
-      .catch(() => setProdutos([]));
-    fetch("http://localhost:3001/categorias")
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch(() => setCategorias([]));
+    fetch("http://localhost:3001/produtos").then((res) => res.json()).then((data) => setProdutos(data)).catch(() => setProdutos([]));
+    fetch("http://localhost:3001/categorias").then((res) => res.json()).then((data) => setCategorias(data)).catch(() => setCategorias([]));
   }, []);
 
   function handleSubmit() {
@@ -30,13 +26,20 @@ export default function ProdutosPage() {
     if (Number(preco) <= 0) { setErro("O preço deve ser maior que zero."); return; }
     if (Number(estoque) < 0) { setErro("O estoque não pode ser negativo."); return; }
     setErro("");
+    setSalvando(true);
     fetch("http://localhost:3001/produtos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome, preco: Number(preco), estoque: Number(estoque), categoriaId: categoriaId ? Number(categoriaId) : null }),
     })
       .then((res) => res.json())
-      .then((novo) => { setProdutos([...produtos, novo]); setNome(""); setPreco(""); setEstoque(""); setCategoriaId(""); });
+      .then((novo) => {
+        setProdutos([...produtos, novo]);
+        setNome(""); setPreco(""); setEstoque(""); setCategoriaId("");
+        setSucesso("Produto cadastrado com sucesso!");
+        setTimeout(() => setSucesso(""), 3000);
+      })
+      .finally(() => setSalvando(false));
   }
 
   const inputStyle = {
@@ -46,7 +49,7 @@ export default function ProdutosPage() {
 
   return (
     <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ fontSize: "1.8rem", marginBottom: "0.25rem", color: "#111" }}>Produtos</h1>
+      <h1 style={{ fontSize: "1.8rem", marginBottom: "0.25rem", color: "#ffffff" }}>Produtos</h1>
       <p style={{ color: "#888", marginBottom: "2rem" }}>Cadastre e gerencie os produtos do sistema.</p>
 
       <div style={{ backgroundColor: "#151516", borderRadius: "12px", padding: "1.5rem", marginBottom: "2rem", maxWidth: "480px" }}>
@@ -55,18 +58,19 @@ export default function ProdutosPage() {
           <input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} style={inputStyle} />
           <input placeholder="Preço (ex: 29.90)" type="number" value={preco} onChange={(e) => setPreco(e.target.value)} style={inputStyle} />
           <input placeholder="Estoque" type="number" value={estoque} onChange={(e) => setEstoque(e.target.value)} style={inputStyle} />
-          <select value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)} style={{ ...inputStyle }}>
+          <select value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)} style={inputStyle}>
             <option value="">Sem categoria</option>
             {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
           </select>
           {erro && <p style={{ color: "#ff6b6b", fontSize: "0.85rem", margin: 0 }}>{erro}</p>}
-          <button onClick={handleSubmit} style={{ padding: "0.7rem", borderRadius: "8px", border: "none", backgroundColor: "white", color: "#151516", fontWeight: "bold", cursor: "pointer", fontSize: "0.95rem" }}>
-            Salvar
+          {sucesso && <p style={{ color: "#4caf50", fontSize: "0.85rem", margin: 0 }}>{sucesso}</p>}
+          <button onClick={handleSubmit} disabled={salvando} style={{ padding: "0.7rem", borderRadius: "8px", border: "none", backgroundColor: salvando ? "#555" : "white", color: salvando ? "#aaa" : "#151516", fontWeight: "bold", cursor: salvando ? "not-allowed" : "pointer", fontSize: "0.95rem" }}>
+            {salvando ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </div>
 
-      <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>Lista de Produtos</h2>
+      <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "#ffffff" }}>Lista de Produtos</h2>
       {produtos.length === 0 ? (
         <p style={{ color: "#888" }}>Nenhum produto cadastrado ainda.</p>
       ) : (
